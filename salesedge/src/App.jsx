@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 
 // ── CONFIG ────────────────────────────────────────────────────────────────────
-const API_URL = (import.meta.env.VITE_API_URL || "https://bcaipro.dinofreud.workers.dev")
+const API_URL = (import.meta.env.VITE_API_URL || "https://bcaipro-api.dinofreud.workers.dev")
   .replace(/\/$/, "");
 
 async function callApi(path, options) {
