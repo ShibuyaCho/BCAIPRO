@@ -1,0 +1,6 @@
+name = "salesedge-api"
+main = "src/index.js"
+compatibility_date = "2026-09-19"
+
+[vars]
+ALLOWED_ORIGIN = "https://shibuyacho.github.io"

@@ -1,7 +1,19 @@
 import { useState, useRef } from "react";
 
 // ── CONFIG ────────────────────────────────────────────────────────────────────
-const OPENAI_KEY = "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";
+const API_URL = (import.meta.env.VITE_API_URL || "https://bcaipro.dinofreud.workers.dev")
+  .replace(/\/$/, "");
+
+async function callApi(path, options) {
+  if (!API_URL) {
+    throw new Error("The API service is not configured.");
+  }
+
+  return fetch(`${API_URL}${path}`, {
+    ...options,
+    headers: { "Content-Type": "application/json", ...options?.headers },
+  });
+}
 // ─────────────────────────────────────────────────────────────────────────────
 
 const ANGLES = [
@@ -12,9 +24,8 @@ const ANGLES = [
 ];
 
 async function generateDescription(vehicleInfo) {
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+  const res = await callApi("/v1/chat/completions", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${OPENAI_KEY}` },
     body: JSON.stringify({
       model: "gpt-4o",
       max_tokens: 300,
@@ -33,9 +44,8 @@ Write 3–4 sentences. Lead with the most exciting feature. Sound like a real sa
 }
 
 async function generateSingleImage(promptText) {
-  const res = await fetch("https://api.openai.com/v1/images/generations", {
+  const res = await callApi("/v1/images/generations", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${OPENAI_KEY}` },
     body: JSON.stringify({
       model: "gpt-image-1",
       prompt: promptText,
@@ -63,9 +73,8 @@ async function generateAllAngles(vehicleInfo) {
 
 async function generateAllAnglesFromPhoto(base64Data, mimeType, vehicleInfo) {
   // First use vision to get a precise description of the vehicle
-  const visionRes = await fetch("https://api.openai.com/v1/chat/completions", {
+  const visionRes = await callApi("/v1/chat/completions", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${OPENAI_KEY}` },
     body: JSON.stringify({
       model: "gpt-4o",
       max_tokens: 200,
